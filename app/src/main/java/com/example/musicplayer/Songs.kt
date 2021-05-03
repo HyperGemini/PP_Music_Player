@@ -12,6 +12,6 @@ class Songs : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_songs, container, false)
+        return inflater.inflate(R.layout.fragment_gui, container, false)
     }
 }

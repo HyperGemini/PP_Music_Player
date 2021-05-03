@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Songs">
 
+
     <LinearLayout
         android:id="@+id/wrapper_main"
         android:layout_width="wrap_content"
@@ -17,12 +18,52 @@
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:src="@drawable/album_art"
-            android:layout_marginBottom="40dp"/>
-        <SeekBar
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"/>
+
+
+        <com.google.android.material.textview.MaterialTextView
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:id="@+id/seek_bar"
-            android:layout_marginBottom="20dp"/>
+            android:text="Song name placehodradsad"
+            android:layout_marginBottom="20dp"
+            android:textSize="13pt"
+            android:ellipsize="end"
+
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            />
+
+
+
+        <com.google.android.material.slider.Slider
+            android:id="@+id/slider"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            app:thumbColor="#c60000"
+            app:trackColor="#CCCCCC"
+            app:trackHeight="1dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00:00"
+                android:layout_marginRight="100dp"/>
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="04:24"
+                android:layout_marginLeft="100dp"/>
+        </LinearLayout>
+
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -44,11 +85,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
-                android:backgroundTint="#FF0000"
-                android:clickable="true"
-                android:src="@drawable/ic_pause_circle"
-                app:backgroundTint="@color/white"
-                app:maxImageSize="24dp" />
+
+                android:src="@drawable/ic_pause"
+
+                app:backgroundTint="#c60000"
+                app:maxImageSize="40dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/btn_stop"
