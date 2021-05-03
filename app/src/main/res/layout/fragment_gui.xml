@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Songs">
 
-
     <LinearLayout
         android:id="@+id/wrapper_main"
         android:layout_width="wrap_content"
@@ -14,16 +13,21 @@
         android:orientation="vertical"
         android:layout_centerInParent="true">
 
+
         <ImageView
             android:layout_width="300dp"
             android:layout_height="300dp"
-            android:src="@drawable/album_art"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"/>
+            android:src="@drawable/album_art"
+            android:translationY="-20dp"
+            android:layout_gravity="center"
+            />
 
 
         <com.google.android.material.textview.MaterialTextView
-            android:layout_width="300dp"
+            android:id="@+id/tv_song_name"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:text="Song name placehodradsad"
             android:layout_marginBottom="20dp"
@@ -35,69 +39,105 @@
             />
 
 
-
-        <com.google.android.material.slider.Slider
-            android:id="@+id/slider"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            app:thumbColor="#c60000"
-            app:trackColor="#CCCCCC"
-            app:trackHeight="1dp" />
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:orientation="horizontal">
 
-            <com.google.android.material.textview.MaterialTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="00:00"
-                android:layout_marginRight="100dp"/>
 
             <com.google.android.material.textview.MaterialTextView
+
+                android:id="@+id/tv_current_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="04:24"
-                android:layout_marginLeft="100dp"/>
+                android:layout_gravity="center"
+                android:text="00:00" />
+
+            <SeekBar
+                android:id="@+id/slider"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/tv_total_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="04:24" />
         </LinearLayout>
-
-
-        <LinearLayout
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
+            android:id="@+id/test"/>
+        <LinearLayout
             android:id="@+id/wrapper"
-            android:layout_gravity="center">
+            android:layout_width="wrap_content"
+            android:layout_height="96dp"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_play"
+                android:id="@+id/btn_shuffle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
+                android:backgroundTint="#ff4e2f"
+                android:clickable="true"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                android:src="@drawable/ic_baseline_shuffle_24"
+                android:translationY="10dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_previous"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:clickable="true"
                 android:contentDescription=""
-                android:src="@drawable/ic_play_circle" />
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                android:src="@drawable/ic_previous"
+                app:backgroundTint="#c60000"
+                app:maxImageSize="33dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_pause"
+                android:id="@+id/btn_playpause"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:scaleX="1.5"
+                android:scaleY="1.5"
                 android:src="@drawable/ic_pause"
-
+                android:translationY="10dp"
                 app:backgroundTint="#c60000"
                 app:maxImageSize="40dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/btn_stop"
+                android:id="@+id/next"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
+                android:layout_margin="10dp"
+                android:backgroundTint="@color/base_red"
                 android:clickable="true"
-                android:src="@drawable/ic_stop_circle" />
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                android:src="@drawable/ic_next"
+                app:maxImageSize="33dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/btn_loop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:backgroundTint="#8d0000"
+                android:clickable="true"
+                android:scaleX="0.9"
+                android:scaleY="0.9"
+                android:src="@drawable/ic_loop"
+                android:translationY="10dp" />
 
 
         </LinearLayout>
