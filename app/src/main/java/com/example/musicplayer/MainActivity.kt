@@ -1,93 +1,73 @@
 package com.example.musicplayer
 
-import android.media.MediaPlayer
+import android.content.pm.PackageManager
+import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
-import android.widget.Button
-import android.widget.SeekBar
+import android.util.Log
 import android.widget.Toast
-import androidx.viewpager2.widget.ViewPager2
-import kotlinx.android.synthetic.main.fragment_gui.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var viewPager: ViewPager2
-    private lateinit var mediaPlayer: MediaPlayer
-    private lateinit var runnable: Runnable
-    private var handler: Handler = Handler()
-    private var pause:Boolean =false
+    var songModelModelData: ArrayList<SongModel> = ArrayList()
+    private lateinit var songAdapter: SongListAdapter
+    companion object{
+        val PERMISSION_REQUEST_CODE = 12
+    }
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Instantiate a ViewPager2 and a PagerAdapter
-        viewPager = findViewById(R.id.view_pager2)
-
-        // The pager adapter, which provides the pages to the view pager widget
-        val pagerAdapter = FragmentAdapter(this)
-        viewPager.adapter = pagerAdapter
-
-
-        btn_playpause.setOnClickListener {
-            if(pause){
-                mediaPlayer.seekTo(mediaPlayer.currentPosition)
-                mediaPlayer.start()
-                pause = false
-                Toast.makeText(this,"media playing",Toast.LENGTH_SHORT).show()
-            }else{
-
-                mediaPlayer = MediaPlayer.create(applicationContext,R.raw.dancewithsomebody)
-                mediaPlayer.start()
-                Toast.makeText(this,"media playing",Toast.LENGTH_SHORT).show()
-                pause = true
-            }
-            initializeSeekBar()
-
-
+        if(ContextCompat.checkSelfPermission(applicationContext,android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this@MainActivity,
+            arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+            PERMISSION_REQUEST_CODE )
+        }else{
+            loadData()
         }
-        slider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
-                if (b) {
-                    mediaPlayer.seekTo(i * 1000)
-                }
-            }
-
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-            }
-
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-            }
-        })
 
 
     }
-    private fun initializeSeekBar() {
-        slider.max = mediaPlayer.seconds
 
-        runnable = Runnable {
-            slider.progress = mediaPlayer.currentSeconds
+    fun loadData(){
+        var songCursor: Cursor? = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null)
 
-            tv_current_time.text = "${mediaPlayer.currentSeconds} sec"
-            val diff = mediaPlayer.seconds - mediaPlayer.currentSeconds
-            tv_total_time.text = "$diff sec"
-
-            handler.postDelayed(runnable, 1000)
+        while (songCursor != null && songCursor.moveToNext()) {
+            val songName = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
+            val songDuration = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
+            songModelModelData.add(SongModel(songName,
+                    songDuration
+            ))
         }
-        handler.postDelayed(runnable, 1000)
+
+        songAdapter = SongListAdapter(songModelModelData)
+
+        recyclerView.adapter = songAdapter
+        var layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = layoutManager
     }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if(requestCode == PERMISSION_REQUEST_CODE){
+            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(applicationContext,"Permission granted",Toast.LENGTH_SHORT).show()
+                loadData()
+            }
+        }
+    }
+
+
+
+
+
 
 }
 
-val MediaPlayer.seconds:Int
-    get() {
-        return this.duration / 1000
-    }
-// Creating an extension property to get media player current position in seconds
-val MediaPlayer.currentSeconds:Int
-    get() {
-        return this.currentPosition/1000
-    }

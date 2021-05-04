@@ -1,42 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Songs">
 
     <LinearLayout
         android:id="@+id/wrapper_main"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true">
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
 
 
         <ImageView
             android:layout_width="300dp"
             android:layout_height="300dp"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:src="@drawable/album_art"
-            android:translationY="-20dp"
-            android:layout_gravity="center"
-            />
+            android:translationY="-20dp" />
 
 
         <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_song_name"
             android:layout_width="350dp"
             android:layout_height="wrap_content"
-            android:text="Song name placehodradsad"
             android:layout_marginBottom="20dp"
-            android:textSize="13pt"
             android:ellipsize="end"
-
             android:maxLines="1"
             android:scrollHorizontally="true"
-            />
+
+            android:text="Song name placehodradsad"
+            android:textSize="13pt" />
 
 
         <LinearLayout
@@ -55,7 +53,7 @@
                 android:text="00:00" />
 
             <SeekBar
-                android:id="@+id/slider"
+                android:id="@+id/sb_slider"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content" />
 
@@ -66,10 +64,7 @@
                 android:layout_gravity="center"
                 android:text="04:24" />
         </LinearLayout>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/test"/>
+
         <LinearLayout
             android:id="@+id/wrapper"
             android:layout_width="wrap_content"
@@ -138,11 +133,7 @@
                 android:scaleY="0.9"
                 android:src="@drawable/ic_loop"
                 android:translationY="10dp" />
-
-
         </LinearLayout>
-
-
     </LinearLayout>
 
 </RelativeLayout>
