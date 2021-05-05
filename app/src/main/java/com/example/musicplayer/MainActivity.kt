@@ -5,8 +5,11 @@ import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
+<<<<<<< HEAD
 import android.view.MotionEvent
 import android.widget.EditText
+=======
+>>>>>>> 2eb76c6ada99910b99b1be2c542a6908e45bca59
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -25,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var songName:TextView
 
+    var pause: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         val playPause: FloatingActionButton = findViewById(R.id.btn_playpause)
+<<<<<<< HEAD
 
 
         songName.text = songModelModelData[songAdapter.pos_].mSongName
@@ -60,6 +65,21 @@ class MainActivity : AppCompatActivity() {
         recyclerView.setOnClickListener{
             Toast.makeText(applicationContext,"Permission granted",Toast.LENGTH_SHORT).show()
             songName.text = songModelModelData[songAdapter.pos_].mSongName
+=======
+        val songName: TextView = findViewById(R.id.tv_song_name)
+
+        songName.text = songModelModelData[0].mSongName
+
+        playPause.setOnClickListener {
+            if(pause){
+                playPause.setImageResource(R.drawable.ic_play)
+                pause = false
+            }
+            else{
+                playPause.setImageResource(R.drawable.ic_pause)
+                pause = true
+            }
+>>>>>>> 2eb76c6ada99910b99b1be2c542a6908e45bca59
         }
     }
 
@@ -80,10 +100,14 @@ class MainActivity : AppCompatActivity() {
             ))
         }
 
+<<<<<<< HEAD
         songAdapter = SongAdapter(songModelModelData,applicationContext,songName)
 
 
 
+=======
+        songAdapter = SongAdapter(songModelModelData,applicationContext)
+>>>>>>> 2eb76c6ada99910b99b1be2c542a6908e45bca59
 
         recyclerView.adapter = songAdapter
         var layoutManager = LinearLayoutManager(this)
