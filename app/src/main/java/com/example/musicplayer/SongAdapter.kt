@@ -31,7 +31,7 @@ class SongAdapter(songModelModel: MutableList<SongModel>,context:Context,
     var mCurTime = currTime
     var mTotTime = totTime
     var mSeekBar = seekBar
-    var isLoop: Boolean = true
+    var isLoop: Boolean = false
     var isShuffle: Boolean = true
     var curIndex: Int = 0
 
