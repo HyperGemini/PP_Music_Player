@@ -1,5 +1,6 @@
 package com.example.musicplayer
 
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.media.MediaPlayer
@@ -40,6 +41,7 @@ class MainActivity : AppCompatActivity() {
 
     var pause: Boolean = false
 
+    @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -92,6 +94,64 @@ class MainActivity : AppCompatActivity() {
                 songAdapter.pause = true
             }
         }
+
+        next.setOnClickListener{
+
+            if(songAdapter.curIndex>=songModelModelData.size-1){
+                songAdapter.curIndex=-1
+            }
+            songAdapter.curIndex++
+
+            if(songAdapter.mp == null){
+                songAdapter.mp = MediaPlayer()
+                songAdapter.mp!!.setDataSource(songModelModelData[songAdapter.curIndex].mSongPath)
+                songAdapter.mp!!.prepare()
+                songAdapter.mp!!.setOnPreparedListener {
+                    songAdapter.mp!!.start()
+                }
+                totTime.text = songAdapter.formatTime(songAdapter.mp!!.duration)
+                songName.text = songModelModelData[songAdapter.curIndex].mSongName
+                songAdapter.mPlayPause.setImageResource(R.drawable.ic_pause)
+                songAdapter.pause = false
+            }else {
+                playSong()
+            }
+        }
+
+        previous.setOnClickListener{
+
+
+            if(songAdapter.curIndex<=0){
+                songAdapter.curIndex = songModelModelData.size
+            }
+            songAdapter.curIndex--
+            if(songAdapter.mp == null){
+                songAdapter.mp = MediaPlayer()
+                songAdapter.mp!!.setDataSource(songModelModelData[songAdapter.curIndex].mSongPath)
+                songAdapter.mp!!.prepare()
+                songAdapter.mp!!.setOnPreparedListener {
+                    songAdapter.mp!!.start()
+                }
+                totTime.text = songAdapter.formatTime(songAdapter.mp!!.duration)
+                songName.text = songModelModelData[songAdapter.curIndex].mSongName
+                songAdapter.mPlayPause.setImageResource(R.drawable.ic_pause)
+                songAdapter.pause = false
+            }else {
+                playSong()
+            }
+        }
+
+        shuffle.setOnClickListener{
+            if(songAdapter.isShuffle){
+                shuffle.setBackgroundColor(R.color.base_red)
+                songAdapter.isShuffle = false
+            }else{
+                shuffle.setBackgroundColor(R.color.white)
+                songAdapter.isShuffle = true
+            }
+
+        }
+
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 if (b) {
@@ -109,7 +169,19 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
-
+    fun playSong(){
+        songAdapter.mp!!.stop()
+        songAdapter.mp!!.release()
+        songAdapter.mp = null
+        songAdapter.mp = MediaPlayer()
+        songAdapter.mp!!.setDataSource(songModelModelData[songAdapter.curIndex].mSongPath)
+        songAdapter.mp!!.prepare()
+        songAdapter.mp!!.setOnPreparedListener {
+            songAdapter.mp!!.start()
+        }
+        totTime.text = songAdapter.formatTime(songAdapter.mp!!.duration)
+        songName.text = songModelModelData[songAdapter.curIndex].mSongName
+    }
 
     @Suppress("DEPRECATION")
     fun loadData(){

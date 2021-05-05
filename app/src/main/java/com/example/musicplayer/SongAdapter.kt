@@ -31,6 +31,9 @@ class SongAdapter(songModelModel: MutableList<SongModel>,context:Context,
     var mCurTime = currTime
     var mTotTime = totTime
     var mSeekBar = seekBar
+    var isLoop: Boolean = true
+    var isShuffle: Boolean = true
+    var curIndex: Int = 0
 
     private lateinit var runnable:Runnable
     private var handler: Handler = Handler()
@@ -91,8 +94,25 @@ class SongAdapter(songModelModel: MutableList<SongModel>,context:Context,
                     mp!!.start()
                 }
                 initializeSeekBar()
-
+                curIndex = pos
                 mTotTime.text = formatTime(mp!!.duration)
+
+                mp!!.setOnCompletionListener {
+                    if(isLoop){
+                        mp!!.stop()
+                        mp!!.release()
+                        //mp = null
+                        mp = MediaPlayer()
+                        mp!!.setDataSource(model.mSongPath)
+                        mp!!.prepare()
+                        mp!!.setOnPreparedListener {
+                            mp!!.start()
+                        }
+                    }else{
+
+                    }
+                }
+
             }
         })
 
