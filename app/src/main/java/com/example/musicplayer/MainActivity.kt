@@ -5,22 +5,24 @@ import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     var songModelModelData: ArrayList<SongModel> = ArrayList()
-    private lateinit var songAdapter: SongListAdapter
+    private lateinit var songAdapter: SongAdapter
     companion object{
         val PERMISSION_REQUEST_CODE = 12
     }
 
 
+    var pause: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,21 +36,41 @@ class MainActivity : AppCompatActivity() {
             loadData()
         }
 
+        val playPause: FloatingActionButton = findViewById(R.id.btn_playpause)
+        val songName: TextView = findViewById(R.id.tv_song_name)
 
+        songName.text = songModelModelData[0].mSongName
+
+        playPause.setOnClickListener {
+            if(pause){
+                playPause.setImageResource(R.drawable.ic_play)
+                pause = false
+            }
+            else{
+                playPause.setImageResource(R.drawable.ic_pause)
+                pause = true
+            }
+        }
     }
 
+    @Suppress("DEPRECATION")
     fun loadData(){
         var songCursor: Cursor? = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null)
 
         while (songCursor != null && songCursor.moveToNext()) {
             val songName = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.TITLE))
-            val songDuration = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
-            songModelModelData.add(SongModel(songName,
-                    songDuration
+            val songAlbum = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ALBUM))
+            val songArtist = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
+            val songPath = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DATA))
+            songModelModelData.add(SongModel(
+                    songName,
+                    songAlbum,
+                    songArtist,
+                    songPath
             ))
         }
 
-        songAdapter = SongListAdapter(songModelModelData)
+        songAdapter = SongAdapter(songModelModelData,applicationContext)
 
         recyclerView.adapter = songAdapter
         var layoutManager = LinearLayoutManager(this)
