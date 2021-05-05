@@ -5,11 +5,6 @@ import android.database.Cursor
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-<<<<<<< HEAD
-import android.view.MotionEvent
-import android.widget.EditText
-=======
->>>>>>> 2eb76c6ada99910b99b1be2c542a6908e45bca59
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -21,12 +16,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity() {
 
     var songModelModelData: ArrayList<SongModel> = ArrayList()
+    lateinit var songName:TextView
     private lateinit var songAdapter: SongAdapter
     companion object{
         val PERMISSION_REQUEST_CODE = 12
     }
 
-    lateinit var songName:TextView
 
     var pause: Boolean = false
 
@@ -36,50 +31,28 @@ class MainActivity : AppCompatActivity() {
         songName= findViewById(R.id.tv_song_name)
         if(ContextCompat.checkSelfPermission(applicationContext,android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this@MainActivity,
-            arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
-            PERMISSION_REQUEST_CODE )
+                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                PERMISSION_REQUEST_CODE )
         }else{
             loadData()
         }
 
         val playPause: FloatingActionButton = findViewById(R.id.btn_playpause)
-<<<<<<< HEAD
 
-
-        songName.text = songModelModelData[songAdapter.pos_].mSongName
-
-        playPause.setOnClickListener {
-            if(songAdapter.pause){
-                playPause.setImageResource(R.drawable.ic_play)
-                songAdapter.pause = false
-                songAdapter.mp!!.pause()
-            }
-            else{
-                playPause.setImageResource(R.drawable.ic_pause)
-                songAdapter.pause = true
-                songAdapter.mp!!.start()
-            }
-        }
-
-
-        recyclerView.setOnClickListener{
-            Toast.makeText(applicationContext,"Permission granted",Toast.LENGTH_SHORT).show()
-            songName.text = songModelModelData[songAdapter.pos_].mSongName
-=======
-        val songName: TextView = findViewById(R.id.tv_song_name)
 
         songName.text = songModelModelData[0].mSongName
 
         playPause.setOnClickListener {
             if(pause){
                 playPause.setImageResource(R.drawable.ic_play)
+                songAdapter.mp!!.start()
                 pause = false
             }
             else{
                 playPause.setImageResource(R.drawable.ic_pause)
+                songAdapter.mp!!.pause()
                 pause = true
             }
->>>>>>> 2eb76c6ada99910b99b1be2c542a6908e45bca59
         }
     }
 
@@ -93,21 +66,14 @@ class MainActivity : AppCompatActivity() {
             val songArtist = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.ARTIST))
             val songPath = songCursor.getString(songCursor.getColumnIndex(MediaStore.Audio.Media.DATA))
             songModelModelData.add(SongModel(
-                    songName,
-                    songAlbum,
-                    songArtist,
-                    songPath
+                songName,
+                songAlbum,
+                songArtist,
+                songPath
             ))
         }
 
-<<<<<<< HEAD
         songAdapter = SongAdapter(songModelModelData,applicationContext,songName)
-
-
-
-=======
-        songAdapter = SongAdapter(songModelModelData,applicationContext)
->>>>>>> 2eb76c6ada99910b99b1be2c542a6908e45bca59
 
         recyclerView.adapter = songAdapter
         var layoutManager = LinearLayoutManager(this)
@@ -122,7 +88,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 
 
 
