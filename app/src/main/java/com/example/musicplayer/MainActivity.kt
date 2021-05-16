@@ -3,10 +3,8 @@ package com.example.musicplayer
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.database.Cursor
-import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.provider.MediaStore
 import android.widget.SeekBar
 import android.widget.TextView
@@ -31,6 +29,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var totTime:TextView
     lateinit var seekBar: SeekBar
 
+    lateinit var mediaPlayerAdapter: MediaPlayerAdapter
+    lateinit var viewAdapter: ViewAdapter
+
 
 
     private lateinit var songAdapter: SongAdapter
@@ -39,24 +40,12 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    var pause: Boolean = false
 
     @SuppressLint("ResourceAsColor")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        songName= findViewById(R.id.tv_song_name)
-        curTime = findViewById(R.id.tv_current_time)
-        totTime = findViewById(R.id.tv_total_time)
-
-        playPause = findViewById(R.id.btn_playpause)
-        next = findViewById(R.id.btn_next)
-        previous = findViewById(R.id.btn_previous)
-        loop = findViewById(R.id.btn_next)
-        shuffle = findViewById(R.id.btn_shuffle)
-
-        seekBar = findViewById(R.id.sb_seekbar)
 
         if(ContextCompat.checkSelfPermission(applicationContext,android.Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this@MainActivity,
@@ -66,125 +55,88 @@ class MainActivity : AppCompatActivity() {
             loadData()
         }
 
-        val playPause: FloatingActionButton = findViewById(R.id.btn_playpause)
-
-
+        setOnClickListeners()
         songName.text = songModelModelData[0].mSongName
 
+
+    }
+
+
+    private fun setOnClickListeners() {
         playPause.setOnClickListener {
-            if(songAdapter.pause){
-
-                playPause.setImageResource(R.drawable.ic_pause)
-
-                if(songAdapter.mp==null){
-                    songAdapter.mp = MediaPlayer()
-                    songAdapter.mp!!.setDataSource(songModelModelData[0].mSongPath)
-                    songAdapter.mp!!.prepare()
-                    songAdapter.mp!!.setOnPreparedListener {
-                        songAdapter.mp!!.start()
-                    }
+            if(!mediaPlayerAdapter.isInit){
+                mediaPlayerAdapter.creatMediaPlayer(0)
+            }else{
+                if(mediaPlayerAdapter.isPause){
+                    mediaPlayerAdapter.resumeSong()
+                }else{
+                    mediaPlayerAdapter.pauseSong()
                 }
-                songAdapter.mp!!.start()
-                songAdapter.pause = false
-                songAdapter.initializeSeekBar()
-            }
-            else{
-                playPause.setImageResource(R.drawable.ic_play)
-                songAdapter.mp!!.pause()
-                songAdapter.pause = true
             }
         }
 
         next.setOnClickListener{
-
-            if(songAdapter.curIndex>=songModelModelData.size-1){
-                songAdapter.curIndex=-1
-            }
-            songAdapter.curIndex++
-
-            if(songAdapter.mp == null){
-                songAdapter.mp = MediaPlayer()
-                songAdapter.mp!!.setDataSource(songModelModelData[songAdapter.curIndex].mSongPath)
-                songAdapter.mp!!.prepare()
-                songAdapter.mp!!.setOnPreparedListener {
-                    songAdapter.mp!!.start()
-                }
-                totTime.text = songAdapter.formatTime(songAdapter.mp!!.duration)
-                songName.text = songModelModelData[songAdapter.curIndex].mSongName
-                songAdapter.mPlayPause.setImageResource(R.drawable.ic_pause)
-                songAdapter.pause = false
-            }else {
-                playSong()
-            }
+            mediaPlayerAdapter.playNextSong()
         }
 
         previous.setOnClickListener{
-
-
-            if(songAdapter.curIndex<=0){
-                songAdapter.curIndex = songModelModelData.size
-            }
-            songAdapter.curIndex--
-            if(songAdapter.mp == null){
-                songAdapter.mp = MediaPlayer()
-                songAdapter.mp!!.setDataSource(songModelModelData[songAdapter.curIndex].mSongPath)
-                songAdapter.mp!!.prepare()
-                songAdapter.mp!!.setOnPreparedListener {
-                    songAdapter.mp!!.start()
-                }
-                totTime.text = songAdapter.formatTime(songAdapter.mp!!.duration)
-                songName.text = songModelModelData[songAdapter.curIndex].mSongName
-                songAdapter.mPlayPause.setImageResource(R.drawable.ic_pause)
-                songAdapter.pause = false
-            }else {
-                playSong()
-            }
+            mediaPlayerAdapter.playPreviousSong()
         }
 
         shuffle.setOnClickListener{
-            if(songAdapter.isShuffle){
-                shuffle.setBackgroundColor(R.color.base_red)
-                songAdapter.isShuffle = false
+            if(mediaPlayerAdapter.isShuffle){
+                mediaPlayerAdapter.isShuffle = false
+                Toast.makeText(applicationContext,"Shuffle is off",Toast.LENGTH_SHORT).show()
             }else{
-                shuffle.setBackgroundColor(R.color.white)
-                songAdapter.isShuffle = true
+                mediaPlayerAdapter.isShuffle = true
+                Toast.makeText(applicationContext,"Shuffle is on",Toast.LENGTH_SHORT).show()
             }
-
         }
+
+        loop.setOnClickListener{
+            if(mediaPlayerAdapter.isLoop){
+                mediaPlayerAdapter.isLoop = false
+                Toast.makeText(applicationContext,"Loop is off",Toast.LENGTH_SHORT).show()
+            }else{
+                mediaPlayerAdapter.isLoop = true
+                Toast.makeText(applicationContext,"Loop is on",Toast.LENGTH_SHORT).show()
+            }
+        }
+
 
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, i: Int, b: Boolean) {
                 if (b) {
-                    if(songAdapter.mp != null) {
-                        songAdapter.mp!!.seekTo(i * 1000)
+                    if(mediaPlayerAdapter.mp != null) {
+                        mediaPlayerAdapter.mp!!.seekTo(i * 1000)
+                        curTime.text = mediaPlayerAdapter.formatTime(i*1000)
                     }
                 }
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
             }
-
             override fun onStopTrackingTouch(seekBar: SeekBar) {
             }
         })
     }
 
-    fun playSong(){
-        songAdapter.mp!!.stop()
-        songAdapter.mp!!.release()
-        songAdapter.mp = null
-        songAdapter.mp = MediaPlayer()
-        songAdapter.mp!!.setDataSource(songModelModelData[songAdapter.curIndex].mSongPath)
-        songAdapter.mp!!.prepare()
-        songAdapter.mp!!.setOnPreparedListener {
-            songAdapter.mp!!.start()
-        }
-        totTime.text = songAdapter.formatTime(songAdapter.mp!!.duration)
-        songName.text = songModelModelData[songAdapter.curIndex].mSongName
-    }
+
+
 
     @Suppress("DEPRECATION")
     fun loadData(){
+        songName = findViewById(R.id.tv_song_name)
+        curTime = findViewById(R.id.tv_current_time)
+        totTime = findViewById(R.id.tv_total_time)
+        playPause = findViewById(R.id.btn_playpause)
+        next = findViewById(R.id.btn_next)
+        previous = findViewById(R.id.btn_previous)
+        loop = findViewById(R.id.btn_loop)
+        shuffle = findViewById(R.id.btn_shuffle)
+        seekBar = findViewById(R.id.sb_seekbar)
+
+        // TODO: Limit Search
         var songCursor: Cursor? = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null)
 
         while (songCursor != null && songCursor.moveToNext()) {
@@ -200,7 +152,11 @@ class MainActivity : AppCompatActivity() {
             ))
         }
 
-        songAdapter = SongAdapter(songModelModelData,applicationContext,songName,playPause,next,previous,loop,shuffle,curTime,totTime,seekBar)
+        songModelModelData.sortWith(Comparator{ x ,y -> x.mSongName.compareTo(y.mSongName)})
+
+        viewAdapter = ViewAdapter(songName,playPause,next,previous,loop,shuffle,curTime,totTime,seekBar)
+        mediaPlayerAdapter = MediaPlayerAdapter(songModelModelData,viewAdapter)
+        songAdapter = SongAdapter(songModelModelData,mediaPlayerAdapter)
 
         recyclerView.adapter = songAdapter
         var layoutManager = LinearLayoutManager(this)
@@ -215,11 +171,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
-
-
-
-
 }
 
