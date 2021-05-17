@@ -3,15 +3,22 @@ package com.example.musicplayer
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.database.Cursor
+import android.media.MediaPlayer
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.widget.SearchView
 import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -121,6 +128,24 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.nav_menu, menu)
+        val search: MenuItem? = menu?.findItem(R.id.nav_search)
+        val searchView: SearchView = search?.actionView as SearchView
+        searchView.queryHint = "Search songs"
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                songAdapter.filter.filter(newText)
+                return true
+            }
+        })
+        return super.onCreateOptionsMenu(menu)
+    }
 
 
 
@@ -136,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         shuffle = findViewById(R.id.btn_shuffle)
         seekBar = findViewById(R.id.sb_seekbar)
 
-        // TODO: Limit Search
+        // TODO: 13-May-21 Limit Search
         var songCursor: Cursor? = contentResolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, null, null, null)
 
         while (songCursor != null && songCursor.moveToNext()) {
