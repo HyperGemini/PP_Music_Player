@@ -64,6 +64,9 @@ class MediaPlayerAdapter(songList: MutableList<SongModel>, viewAdapter: ViewAdap
                 position = (0 until mSongList.size).random()
                 createMediaPlayer(position)
             }
+            isLoop -> {
+                createMediaPlayer(position)
+            }
             else -> {
                 if (position >= mSongList.size - 1) {
                     position = -1
@@ -74,10 +77,14 @@ class MediaPlayerAdapter(songList: MutableList<SongModel>, viewAdapter: ViewAdap
     }
 
     fun playPreviousSong() {
-        if (position <= 0) {
-            position = mSongList.size
+        if (isLoop) {
+            createMediaPlayer(position)
+        } else {
+            if (position <= 0) {
+                position = mSongList.size
+            }
+            createMediaPlayer(position - 1)
         }
-        createMediaPlayer(position - 1)
     }
 
     private fun destroyPlayer() {
