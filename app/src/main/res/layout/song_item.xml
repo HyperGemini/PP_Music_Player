@@ -1,58 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="90dp">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    android:layout_height="70dp"
+    android:background="#121212">
 
             <ImageView
                 android:id="@+id/image_cover"
-                android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:padding="10dp"
-                android:src="@mipmap/ic_launcher" />
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:padding="6dp"
+                android:src="@drawable/album_art"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-            <!-- Unete su izmene ovde-->
+            <TextView
+                android:id="@+id/song_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="4dp"
+                android:maxLines="1"
+                android:text="Dummy song name"
+                android:textColor="@color/text_color"
+                android:textSize="17sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_cover"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/song_duration"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:text="3:00"
+                android:textColor="#9B9595"
+                android:layout_marginLeft="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/image_cover"
+                app:layout_constraintTop_toBottomOf="@+id/song_name" />
+
+
             <LinearLayout
+                android:id="@+id/linearLayout2"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@+id/image_cover"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/song_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:text="Dummy song name"
-                    android:textColor="#000"
-                    android:textSize="16dp" />
-
-                <TextView
-                    android:id="@+id/song_duration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="8dp"
-                    android:paddingTop="4dp"
-                    android:text="3:00"
-                    android:textColor="#000" />
+                android:layout_height="1dp"
+                android:background="#383838"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 
-            </LinearLayout>
 
-        </RelativeLayout>
-
-    </androidx.cardview.widget.CardView>
-
-</RelativeLayout>

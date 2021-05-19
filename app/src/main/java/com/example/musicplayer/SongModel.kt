@@ -1,7 +1,5 @@
 package com.example.musicplayer
 
-import android.provider.MediaStore
-
 class SongModel(songName:String,
                 songAlbumTitle:String, songArtist: String, songPath: String
     ){

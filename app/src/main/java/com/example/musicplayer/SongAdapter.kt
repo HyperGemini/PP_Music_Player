@@ -1,25 +1,20 @@
 package com.example.musicplayer
 
-import android.content.Context
-import android.content.Intent
-import android.media.MediaPlayer
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicplayer.`interface`.CustomItemClickListener
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 
-class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: MediaPlayerAdapter) : RecyclerView.Adapter<SongAdapter.SongListViewHolder>(),
-    Filterable {
+class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: MediaPlayerAdapter) : RecyclerView.Adapter<SongAdapter.SongListViewHolder>(),Filterable {
+
     var mMediaPlayer = mediaPlayerAdapter
     var mSongModel = songModelModel
 
+    // za filter
     var mSongModelFilter = songModelModel
-
 
     class SongListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
         var song: TextView
@@ -43,6 +38,7 @@ class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: Me
         }
     }
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongListViewHolder {
         var view = LayoutInflater.from(parent!!.context).inflate(R.layout.song_item, parent, false)
         return SongListViewHolder(view)
@@ -60,11 +56,13 @@ class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: Me
                 mMediaPlayer.creatMediaPlayer(pos)
             }
         })
+
     }
 
     override fun getItemCount(): Int {
         return mSongModel.size
     }
+
 
     override fun getFilter(): Filter {
         return object:Filter(){
@@ -77,7 +75,7 @@ class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: Me
                 }else{
                     var searchChr:String = charSequence.toString().toLowerCase()
                     var itemModel: ArrayList<SongModel>
-                    itemModel = mSongModelFilter.filter { it.mSongName.toLowerCase().contains(searchChr) } as ArrayList<SongModel>
+                    itemModel = mSongModelFilter.filter { it.mSongName.toLowerCase().contains(charSequence) } as ArrayList<SongModel>
                     filterResults.count = itemModel.size
                     filterResults.values = itemModel
                 }
@@ -93,4 +91,6 @@ class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: Me
 
         }
     }
+
+
 }

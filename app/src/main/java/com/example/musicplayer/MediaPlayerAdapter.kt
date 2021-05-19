@@ -3,14 +3,14 @@ package com.example.musicplayer
 import android.media.MediaPlayer
 import android.os.Handler
 
-class MediaPlayerAdapter (songList: MutableList<SongModel>,viewAdapter: ViewAdapter){
+class MediaPlayerAdapter(songList: MutableList<SongModel>,viewAdapter: ViewAdapter) { //Medija player adapter je klasa u kojoj je implemtirana funkcionalnost MediaPlayarea i ime svake njene metode opisuje njenu funkciju
     private var mSongList = songList
     private var position = 0
     var isLoop = false
     var isShuffle = false
     var isPause = true
     var isInit = false
-    var mp: MediaPlayer?= null
+    var mp:MediaPlayer ?= null
     private var mViewAdapter = viewAdapter
 
     private var mSeekBar = mViewAdapter.mSeekBar
@@ -19,17 +19,28 @@ class MediaPlayerAdapter (songList: MutableList<SongModel>,viewAdapter: ViewAdap
     private var mTotTime = mViewAdapter.mTotTime
     private var mPlayPause = mViewAdapter.mPlayPause
 
+    private var mPlayPausePrim = mViewAdapter.mPlayPousePrim
+    private var mSongNamePrim = mViewAdapter.mSongNamePrim
+
     private lateinit var runnable:Runnable
     private var handler: Handler = Handler()
 
 
+    fun updateSongList(newSongList:MutableList<SongModel>){
+        mSongList = newSongList
+    }
+
+
     fun creatMediaPlayer(pos: Int){
+
+
         if(isInit){
             destroyPlayer()
         }
 
         isPause = false
         mPlayPause.setImageResource(R.drawable.ic_pause)
+        mPlayPausePrim.setImageResource(R.drawable.ic_pause)
 
         isInit = true
         position = pos
@@ -47,10 +58,6 @@ class MediaPlayerAdapter (songList: MutableList<SongModel>,viewAdapter: ViewAdap
             destroyPlayer()
             playNextSong()
         }
-    }
-
-    fun updateSongList(newSongList:MutableList<SongModel>){
-        mSongList = newSongList
     }
 
     fun playNextSong(){
@@ -89,6 +96,7 @@ class MediaPlayerAdapter (songList: MutableList<SongModel>,viewAdapter: ViewAdap
 
     private fun setSongName(){
         mSongName.text = mSongList[position].mSongName
+        mSongNamePrim.text = mSongList[position].mSongName
     }
 
     private fun setSongDuration(){
@@ -114,7 +122,7 @@ class MediaPlayerAdapter (songList: MutableList<SongModel>,viewAdapter: ViewAdap
         val sStr:String = if(s<10){
             "0${s}"
         }else{
-            "$s"
+           "$s"
         }
 
         val mStr:String = if(m<10){
@@ -124,12 +132,12 @@ class MediaPlayerAdapter (songList: MutableList<SongModel>,viewAdapter: ViewAdap
         }
 
         return "$mStr:$sStr"
-
     }
 
     fun pauseSong(){
         mp!!.pause()
         mPlayPause.setImageResource(R.drawable.ic_play)
+        mPlayPausePrim.setImageResource(R.drawable.ic_play)
         isPause = true
     }
 
@@ -137,6 +145,7 @@ class MediaPlayerAdapter (songList: MutableList<SongModel>,viewAdapter: ViewAdap
         mp!!.start()
         initializeSeekBar()
         mPlayPause.setImageResource(R.drawable.ic_pause)
+        mPlayPausePrim.setImageResource(R.drawable.ic_pause)
         isPause = false
     }
 }
