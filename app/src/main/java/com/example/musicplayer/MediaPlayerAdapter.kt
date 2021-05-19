@@ -3,14 +3,14 @@ package com.example.musicplayer
 import android.media.MediaPlayer
 import android.os.Handler
 
-class MediaPlayerAdapter(songList: MutableList<SongModel>,viewAdapter: ViewAdapter) { //Medija player adapter je klasa u kojoj je implemtirana funkcionalnost MediaPlayarea i ime svake njene metode opisuje njenu funkciju
+class MediaPlayerAdapter(songList: MutableList<SongModel>, viewAdapter: ViewAdapter) {
     private var mSongList = songList
     private var position = 0
     var isLoop = false
     var isShuffle = false
     var isPause = true
     var isInit = false
-    var mp:MediaPlayer ?= null
+    var mp: MediaPlayer? = null
     private var mViewAdapter = viewAdapter
 
     private var mSeekBar = mViewAdapter.mSeekBar
@@ -22,19 +22,16 @@ class MediaPlayerAdapter(songList: MutableList<SongModel>,viewAdapter: ViewAdapt
     private var mPlayPausePrim = mViewAdapter.mPlayPousePrim
     private var mSongNamePrim = mViewAdapter.mSongNamePrim
 
-    private lateinit var runnable:Runnable
+    private lateinit var runnable: Runnable
     private var handler: Handler = Handler()
 
 
-    fun updateSongList(newSongList:MutableList<SongModel>){
+    fun updateSongList(newSongList: MutableList<SongModel>) {
         mSongList = newSongList
     }
 
-
-    fun creatMediaPlayer(pos: Int){
-
-
-        if(isInit){
+    fun createMediaPlayer(pos: Int) {
+        if (isInit) {
             destroyPlayer()
         }
 
@@ -50,6 +47,7 @@ class MediaPlayerAdapter(songList: MutableList<SongModel>,viewAdapter: ViewAdapt
         mp!!.setOnPreparedListener {
             mp!!.start()
         }
+
         initializeSeekBar()
         setSongName()
         setSongDuration()
@@ -60,88 +58,86 @@ class MediaPlayerAdapter(songList: MutableList<SongModel>,viewAdapter: ViewAdapt
         }
     }
 
-    fun playNextSong(){
-
+    fun playNextSong() {
         when {
             isShuffle -> {
                 position = (0 until mSongList.size).random()
-                creatMediaPlayer(position)
-
+                createMediaPlayer(position)
             }
             isLoop -> {
-                creatMediaPlayer(position)
+                createMediaPlayer(position)
             }
             else -> {
-                if(position>=mSongList.size-1){
+                if (position >= mSongList.size - 1) {
                     position = -1
                 }
-                creatMediaPlayer(position+1)
+                createMediaPlayer(position + 1)
             }
         }
     }
 
-    fun playPreviousSong(){
-        if(position<=0){
+    fun playPreviousSong() {
+        if (position <= 0) {
             position = mSongList.size
         }
-        creatMediaPlayer(position-1)
+        createMediaPlayer(position - 1)
     }
 
-    private fun destroyPlayer(){
+    private fun destroyPlayer() {
         mp!!.stop()
         mp!!.release()
         mp = null
         isInit = false
     }
 
-    private fun setSongName(){
+    private fun setSongName() {
         mSongName.text = mSongList[position].mSongName
         mSongNamePrim.text = mSongList[position].mSongName
     }
 
-    private fun setSongDuration(){
+    private fun setSongDuration() {
         mTotTime.text = formatTime(mp!!.duration)
     }
 
     private fun initializeSeekBar() {
-        mSeekBar.max = mp!!.duration/1000
+        mSeekBar.max = mp!!.duration / 1000
 
         runnable = Runnable {
-            mSeekBar.progress = mp!!.currentPosition/1000
+            mSeekBar.progress = mp!!.currentPosition / 1000
             mCurTime.text = formatTime(mp!!.currentPosition)
             handler.postDelayed(runnable, 1000)
         }
         handler.postDelayed(runnable, 1000)
     }
 
-    fun formatTime(ms:Int): String{ // iz ms u MM:SS
-        val sec = ms/1000
-        val s = sec%60
-        val m = sec/60
+    fun formatTime(ms: Int): String {
+        val sec = ms / 1000
+        val s = sec % 60
+        val m = sec / 60
 
-        val sStr:String = if(s<10){
+        val sStr: String = if (s < 10) {
             "0${s}"
-        }else{
-           "$s"
+        } else {
+            "$s"
         }
 
-        val mStr:String = if(m<10){
+        val mStr: String = if (m < 10) {
             "0${m}"
-        }else{
+        } else {
             "$m"
         }
 
         return "$mStr:$sStr"
     }
 
-    fun pauseSong(){
+    fun pauseSong() {
         mp!!.pause()
         mPlayPause.setImageResource(R.drawable.ic_play)
         mPlayPausePrim.setImageResource(R.drawable.ic_play)
         isPause = true
     }
 
-    fun resumeSong(){
+    fun resumeSong() {
         mp!!.start()
         initializeSeekBar()
         mPlayPause.setImageResource(R.drawable.ic_pause)

@@ -3,7 +3,9 @@
 
     <item android:drawable="@color/black" />
 
-    <item android:drawable="@drawable/ic_music" android:gravity="center"/>
+    <item
+        android:drawable="@drawable/ic_music"
+        android:gravity="center" />
 
 
 </layer-list>

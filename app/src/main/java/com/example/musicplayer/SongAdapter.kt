@@ -7,20 +7,19 @@ import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musicplayer.`interface`.CustomItemClickListener
 
-
-class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: MediaPlayerAdapter) : RecyclerView.Adapter<SongAdapter.SongListViewHolder>(),Filterable {
+class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: MediaPlayerAdapter) :
+    RecyclerView.Adapter<SongAdapter.SongListViewHolder>(), Filterable {
 
     var mMediaPlayer = mediaPlayerAdapter
     var mSongModel = songModelModel
-
-    // za filter
     var mSongModelFilter = songModelModel
 
-    class SongListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    class SongListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        View.OnClickListener {
         var song: TextView
         var album: TextView
         var albumArt: ImageView
-        var mCustomItemClickListener: CustomItemClickListener?=null
+        var mCustomItemClickListener: CustomItemClickListener? = null
 
         init {
             song = itemView.findViewById(R.id.song_name)
@@ -29,7 +28,7 @@ class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: Me
             itemView.setOnClickListener(this)
         }
 
-        fun setOnCustomItemCLickListener(customItemClickListener: CustomItemClickListener){
+        fun setOnCustomItemCLickListener(customItemClickListener: CustomItemClickListener) {
             this.mCustomItemClickListener = customItemClickListener
         }
 
@@ -38,9 +37,8 @@ class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: Me
         }
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SongListViewHolder {
-        var view = LayoutInflater.from(parent!!.context).inflate(R.layout.song_item, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.song_item, parent, false)
         return SongListViewHolder(view)
     }
 
@@ -49,33 +47,31 @@ class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: Me
         val songName = model.mSongName
         val songAlbum = model.mSongAlbumTitle + " - " + model.mSongArtist
 
-        holder!!.song.text = songName
-        holder!!.album.text = songAlbum
-        holder.setOnCustomItemCLickListener(object : CustomItemClickListener{
+        holder.song.text = songName
+        holder.album.text = songAlbum
+        holder.setOnCustomItemCLickListener(object : CustomItemClickListener {
             override fun onCustomItemClick(view: View, pos: Int) {
-                mMediaPlayer.creatMediaPlayer(pos)
+                mMediaPlayer.createMediaPlayer(pos)
             }
         })
-
     }
 
     override fun getItemCount(): Int {
         return mSongModel.size
     }
 
-
     override fun getFilter(): Filter {
-        return object:Filter(){
+        return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
-                var filterResults=FilterResults()
-                if(charSequence ==null || charSequence.isEmpty()){
+                val filterResults = FilterResults()
+                if (charSequence.isEmpty()) {
                     filterResults.count = mSongModelFilter.size
                     filterResults.values = mSongModelFilter
-
-                }else{
-                    var searchChr:String = charSequence.toString().toLowerCase()
-                    var itemModel: ArrayList<SongModel>
-                    itemModel = mSongModelFilter.filter { it.mSongName.toLowerCase().contains(charSequence) } as ArrayList<SongModel>
+                } else {
+                    val itemModel: ArrayList<SongModel>
+                    itemModel = mSongModelFilter.filter {
+                        it.mSongName.toLowerCase().contains(charSequence)
+                    } as ArrayList<SongModel>
                     filterResults.count = itemModel.size
                     filterResults.values = itemModel
                 }
@@ -88,9 +84,6 @@ class SongAdapter(songModelModel: MutableList<SongModel>, mediaPlayerAdapter: Me
                 mMediaPlayer.updateSongList(mSongModel)
                 notifyDataSetChanged()
             }
-
         }
     }
-
-
 }
